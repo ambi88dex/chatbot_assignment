@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Server Response Page</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+        }
+        input, textarea {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 10px;
+            box-sizing: border-box;
+        }
+        #response-box {
+            height: 100px;
+            border: 1px solid #ccc;
+            padding: 8px;
+            overflow-y: auto;
+        }
+        button {
+            padding: 8px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <label for="input-text">Input Text:</label>
+    <input type="text" id="input-text">
+
+    <button onclick="submitForm()">Submit</button>
+    <button onclick="clearResponse()">Clear Box</button>
+
+    <label for="response-box">Server Response:</label>
+    <div id="response-box"></div>
+
+    <script>
+        function submitForm() {
+            var inputText = document.getElementById("input-text").value;
+
+            // Sending a POST request to the Flask endpoint
+            fetch('http://127.0.0.1:5000/response', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Access-Control-Allow-Origin': '*'
+                },
+                body: JSON.stringify({
+                    input_text: inputText,
+                }),
+            })
+            .then(response => response.json())
+            .then(data => {
+                // Displaying the server response in the response box
+                document.getElementById("response-box").innerHTML = data.response || data.error || "Unexpected response";
+            })
+            .catch(error => console.error('Error:', error));
+        }
+
+
+        function clearResponse() {
+            document.getElementById("response-box").innerHTML = "";
+        }
+    </script>
+</body>
+</html>
